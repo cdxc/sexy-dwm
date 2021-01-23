@@ -1,0 +1,20 @@
+--- dwm.c	2014-06-23 18:04:29.532917821 +0200
++++ dwm.c	2014-06-24 08:17:40.921714154 +0200
+@@ -226,6 +226,8 @@ static void sigchld(int unused);
+ static void spawn(const Arg *arg);
+ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
++static void tagtoleft(const Arg *arg);
++static void tagtoright(const Arg *arg);
+ static int textnw(const char *text, unsigned int len);
+ static void tile(Monitor *);
+ static void togglebar(const Arg *arg);
+@@ -245,6 +247,8 @@ static void updatewindowtype(Client *c);
+ static void updatetitle(Client *c);
+ static void updatewmhints(Client *c);
+ static void view(const Arg *arg);
++static void viewtoleft(const Arg *arg);
++static void viewtoright(const Arg *arg);
+ static Client *wintoclient(Window w);
+ static Monitor *wintomon(Window w);
+ static int xerror(Display *dpy, XErrorEvent *ee);

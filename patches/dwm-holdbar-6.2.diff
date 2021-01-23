@@ -1,0 +1,129 @@
+From 58507fca3c3c334f540700c5ed81815d9335138e Mon Sep 17 00:00:00 2001
+From: Nihal Jere <noocsharp@gmail.com>
+Date: Thu, 12 Mar 2020 10:16:48 -0500
+Subject: [PATCH] holdbar: fixed bar flickering caused by repeated key events
+
+---
+ config.def.h |  2 ++
+ dwm.c        | 50 ++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 52 insertions(+)
+
+diff --git a/config.def.h b/config.def.h
+index 1c0b587..0e19b5d 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -50,6 +50,7 @@ static const Layout layouts[] = {
+ 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
+ 	{ MODKEY|ShiftMask,             KEY,      tag,            {.ui = 1 << TAG} }, \
+ 	{ MODKEY|ControlMask|ShiftMask, KEY,      toggletag,      {.ui = 1 << TAG} },
++#define HOLDKEY 0 // replace 0 with the keysym to activate holdbar
+ 
+ /* helper for spawning shell commands in the pre dwm-5.0 fashion */
+ #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+@@ -94,6 +95,7 @@ static Key keys[] = {
+ 	TAGKEYS(                        XK_8,                      7)
+ 	TAGKEYS(                        XK_9,                      8)
+ 	{ MODKEY|ShiftMask,             XK_q,      quit,           {0} },
++	{ 0,             HOLDKEY,      holdbar,           {0} },
+ };
+ 
+ /* button definitions */
+diff --git a/dwm.c b/dwm.c
+index 4465af1..9437707 100644
+--- a/dwm.c
++++ b/dwm.c
+@@ -176,6 +176,7 @@ static void grabbuttons(Client *c, int focused);
+ static void grabkeys(void);
+ static void incnmaster(const Arg *arg);
+ static void keypress(XEvent *e);
++static void keyrelease(XEvent *e);
+ static void killclient(const Arg *arg);
+ static void manage(Window w, XWindowAttributes *wa);
+ static void mappingnotify(XEvent *e);
+@@ -210,6 +211,7 @@ static void tag(const Arg *arg);
+ static void tagmon(const Arg *arg);
+ static void tile(Monitor *);
+ static void togglebar(const Arg *arg);
++static void holdbar(const Arg *arg);
+ static void togglefloating(const Arg *arg);
+ static void toggletag(const Arg *arg);
+ static void toggleview(const Arg *arg);
+@@ -217,6 +219,7 @@ static void unfocus(Client *c, int setfocus);
+ static void unmanage(Client *c, int destroyed);
+ static void unmapnotify(XEvent *e);
+ static void updatebarpos(Monitor *m);
++static void updateholdbarpos(Monitor *m);
+ static void updatebars(void);
+ static void updateclientlist(void);
+ static int updategeom(void);
+@@ -245,6 +248,7 @@ static int (*xerrorxlib)(Display *, XErrorEvent *);
+ static unsigned int numlockmask = 0;
+ static void (*handler[LASTEvent]) (XEvent *) = {
+ 	[ButtonPress] = buttonpress,
++	[ButtonRelease] = keyrelease,
+ 	[ClientMessage] = clientmessage,
+ 	[ConfigureRequest] = configurerequest,
+ 	[ConfigureNotify] = configurenotify,
+@@ -252,6 +256,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
+ 	[EnterNotify] = enternotify,
+ 	[Expose] = expose,
+ 	[FocusIn] = focusin,
++	[KeyRelease] = keyrelease,
+ 	[KeyPress] = keypress,
+ 	[MappingNotify] = mappingnotify,
+ 	[MapRequest] = maprequest,
+@@ -275,6 +280,51 @@ static Window root, wmcheckwin;
+ struct NumTags { char limitexceeded[LENGTH(tags) > 31 ? -1 : 1]; };
+ 
+ /* function implementations */
++
++
++void
++holdbar(const Arg *arg)
++{
++	selmon->showbar = 1;
++	updateholdbarpos(selmon);
++	XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
++}
++
++
++void
++keyrelease(XEvent *e)
++{
++	if (XEventsQueued(dpy, QueuedAfterReading)) {
++		XEvent ne;
++		XPeekEvent(dpy, &ne);
++
++		if (ne.type == KeyPress && ne.xkey.time == e->xkey.time &&
++				ne.xkey.keycode == e->xkey.keycode) {
++			XNextEvent(dpy, &ne);
++			return;
++		}
++	}
++	if (e->xkey.keycode == XKeysymToKeycode(dpy, HOLDKEY)) {
++		selmon->showbar = 0;
++		updateholdbarpos(selmon);
++		XMoveResizeWindow(dpy, selmon->barwin, selmon->wx, selmon->by, selmon->ww, bh);
++		arrange(selmon);
++	}
++}
++
++void
++updateholdbarpos(Monitor *m)
++{
++	m->wy = m->my;
++	m->wh = m->mh;
++	if (m->showbar) {
++		m->by = m->topbar ? m->wy : m->wy + m->wh - bh;
++		m->wy = m->topbar ? m->wy - bh + bh : m->wy;
++	} else {
++		m->by = -bh;
++	}
++}
++
+ void
+ applyrules(Client *c)
+ {
+-- 
+2.25.1
+
