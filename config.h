@@ -113,11 +113,13 @@ static const char *muttcmd[] = { "st", "-e", "neomutt", NULL };
 static const char *rsscmd[] = { "st", "-e", "newsboat", NULL };
 static const char *switch1[] = {"switch1", NULL};
 static const char *switch2[] = {"switch2", NULL};
+static const char *ckrnsht[] = {"gnome-screenshot", "-i" , NULL};
 
 static const char *appfindercmd[] = { "xfce4-appfinder", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
+        { 0,                            XK_Print,  spawn,          {.v = ckrnsht} }, 
 	{ MODKEY,                       XK_comma,  spawn,          {.v = switch1 } },
 	{ MODKEY,                       XK_period, spawn,          {.v = switch2 } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = rsscmd } },
