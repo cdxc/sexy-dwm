@@ -53,7 +53,7 @@ static const Rule rules[] = {
 	 */
 	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
        { "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
-       { "Firefox", NULL,     NULL,           1 << 8,    0,          0,          -1,        -1 },
+       { "Firefox", NULL,     NULL,           0,		 0,          0,          -1,        -1 },
        { "urxvt",   NULL,     NULL,           0,         0,          1,          -1,        -1 },
        { NULL,      NULL,     "Event Tester", 0,         1,          0,           1,        -1 }, /* xev */
 };
@@ -99,6 +99,7 @@ static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont,
 //static const char *termcmd[] = { "st", NULL };
 static const char *stermcmd[]  = { "tabbed", "-c", "-r", "2", "st", "-w", "''", NULL };
 static const char *termcmd[] = { "st", NULL };
+static const char *xtermcmd[] = { "xterm", NULL };
 static const char *filemanagercmd[] = { "st", "-e", "nnn", NULL };
 //static const char *printcmd[]  = { "scrot",  "/home/connor/Pictures/screenshots/%Y-%m-%d-%s_$wx$h.jpg", NULL };
 static const char *browsercmd[] = { "qutebrowser", NULL };
@@ -123,6 +124,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_comma,  spawn,          {.v = switch1 } },
 	{ MODKEY,                       XK_period, spawn,          {.v = switch2 } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = rsscmd } },
+	{ MODKEY,                       XK_x,      spawn,          {.v = xtermcmd } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = muttcmd } },
 	{ MODKEY,                       XK_i,      spawn,          {.v = luc } },
 	{ MODKEY,                       XK_m,      spawn,          {.v = mic } },
