@@ -13,27 +13,20 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const int swallowfloating    = 0;
 static const char *fonts[]          = { "terminus:size=8" };
 static const char dmenufont[]       = "terminus:size=8";
-static const unsigned int gappx     = 10;
-static const unsigned int smartgaps = 15; //number of px in the gaps when there is one window
+static const unsigned int gappx     = 5;
+static const unsigned int smartgaps = 0; //number of px in the gaps when there is one window
 static const unsigned int baralpha  = 130;
 static const unsigned int borderalpha = OPAQUE;
-static const char col_gray[]        = "#111111";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_gray5[]       = "#555753";
+static const char col_gray[]        = "#888888";
 static const char col_black[]       = "#000000";
-static const char col_cyan[]        = "#005577";
-static const char col_red[]         = "#ca0000";
-static const char col_blue[]        = "#0000ff";
-static const char col_blue1[]       = "#3366ff";
-static const char col_blue2[]        = "#222233";
+static const char col_red[]         = "#ff0000";
+static const char col_green[]       = "#00ff00";
+static const char col_blue[]        = "#9030ff";
 static const char col_white[]       = "#ffffff";
 static const char *colors[][3]      = {
-	/*     fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_black, col_gray2 }, 
-	[SchemeSel] = { col_black, col_white, col_white, },
+			/*     fg         bg         border   */
+	[SchemeNorm] = { col_gray, col_black, col_gray }, 
+	[SchemeSel] = { col_black, col_white, col_blue, },
 };	
 static const unsigned int alphas[][3]      = {
       /*               fg      bg        border     */
@@ -54,8 +47,7 @@ static const Rule rules[] = {
 	/* class     instance  title           tags mask  isfloating  isterminal  noswallow  monitor */
        { "Gimp",    NULL,     NULL,           0,         1,          0,           0,        -1 },
        { "Firefox", NULL,     NULL,           0,		 0,          0,          -1,        -1 },
-       { "urxvt",   NULL,     NULL,           0,         0,          1,          -1,        -1 },
-       { NULL,      NULL,     "Event Tester", 0,         1,          0,           1,        -1 }, /* xev */
+       { NULL,      NULL,     "Event Tester", 0,         0,          0,           1,        -1 }, /* xev */
 };
 
 /* layout(s) */
@@ -95,32 +87,25 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_blue2, "-nf", col_gray4, "-sb", col_white, "-sf", col_black, "-p", "Run:", NULL };
-//static const char *termcmd[] = { "st", NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_black, "-nf", col_white, "-sb", col_green, "-sf", col_black, "-p", "exec:", NULL };
 static const char *stermcmd[]  = { "tabbed", "-c", "-r", "2", "st", "-w", "''", NULL };
 static const char *termcmd[] = { "st", NULL };
 static const char *xtermcmd[] = { "xterm", NULL };
 static const char *filemanagercmd[] = { "st", "-e", "nnn", NULL };
-//static const char *printcmd[]  = { "scrot",  "/home/connor/Pictures/screenshots/%Y-%m-%d-%s_$wx$h.jpg", NULL };
 static const char *browsercmd[] = { "qutebrowser", NULL };
 static const char *mutecmd[] = { "pactl", "set-sink-mute", "0", "toggle", NULL };
 static const char *volupcmd[] = { "pactl", "set-sink-volume", "0", "+5%", NULL };
 static const char *voldowncmd[] = { "pactl", "set-sink-volume", "0", "-5%", NULL };
 static const char *luc[] = {"luc", NULL};
 static const char *mic[] = {"mic", NULL};
-static const char *brupcmd[] = { "sudo", "xbacklight", "-inc", "10", NULL };
-static const char *brdowncmd[] = { "sudo", "xbacklight", "-dec", "10", NULL };
 static const char *muttcmd[] = { "st", "-e", "neomutt", NULL };
 static const char *rsscmd[] = { "st", "-e", "newsboat", NULL };
 static const char *switch1[] = {"switch1", NULL};
 static const char *switch2[] = {"switch2", NULL};
-static const char *ckrnsht[] = {"gnome-screenshot", "-i" , NULL};
-
 static const char *appfindercmd[] = { "xfce4-appfinder", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-        { 0,                            XK_Print,  spawn,          {.v = ckrnsht} }, 
 	{ MODKEY,                       XK_comma,  spawn,          {.v = switch1 } },
 	{ MODKEY,                       XK_period, spawn,          {.v = switch2 } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = rsscmd } },
@@ -152,7 +137,7 @@ static Key keys[] = {
 
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
-//	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 //	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[3]} },
 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[4]} },
@@ -161,17 +146,17 @@ static Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_u,      setlayout,      {.v = &layouts[7]} },
 	{ MODKEY,                       XK_y,      setlayout,      {.v = &layouts[8]} },
 	{ MODKEY|ShiftMask,             XK_i,      setlayout,      {.v = &layouts[9]} },
-	//{ MODKEY|ShiftMask,             XK_i,      setlayout,      {.v = &layouts[9]} },
+//	{ MODKEY|ShiftMask,             XK_i,      setlayout,      {.v = &layouts[9]} },
 //	{ MODKEY,                       XK_comma,  cyclelayout,    {.i = -1 } },
 //	{ MODKEY,                       XK_period, cyclelayout,    {.i = +1 } },
-        { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+    { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_bracketleft,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_bracketright, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_bracketleft,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_bracketright, tagmon,         {.i = +1 } },
-        //{ 0,                            XK_Print,  spawn,          SHCMD("~/dwm-config/screenshot.sh") }, //I'm really sorry for all this bad hardcoding stuff but it's the only way it will work 
+//	{ 0,                            XK_Print,  spawn,          SHCMD("~/dwm-config/screenshot.sh") }, //I'm really sorry for all this bad hardcoding stuff but it's the only way it will work 
 	{ 0,                            XK_Print,  spawn,          SHCMD("scrot") },
 	{ MODKEY,                       XK_w,      spawn,          SHCMD("networkmanager_dmenu") },
 	{ MODKEY,                       XK_o,      spawn,          {.v = browsercmd} }, //Don't ask me how I thought o is a great keybinding for the browser
