@@ -110,6 +110,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_comma,  spawn,          {.v = switch1 } },
 	{ MODKEY,                       XK_period, spawn,          {.v = switch2 } },
 	{ MODKEY,                       XK_r,      spawn,          {.v = rsscmd } },
+	{ MODKEY|ShiftMask,				XK_e,      spawn,          {.v = editorcmd } },
 	{ MODKEY,                       XK_x,      spawn,          {.v = xtermcmd } },
 	{ MODKEY,                       XK_e,      spawn,          {.v = muttcmd } },
 	{ MODKEY,                       XK_i,      spawn,          {.v = luc } },
