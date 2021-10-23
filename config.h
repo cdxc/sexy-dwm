@@ -90,6 +90,7 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_black, "-nf", col_white, "-sb", col_green, "-sf", col_black, "-p", "exec:", NULL };
 static const char *stermcmd[]  = { "tabbed", "-c", "-r", "2", "st", "-w", "''", NULL };
 static const char *termcmd[] = { "st", NULL };
+static const char *editorcmd[] = { "emacs", NULL };
 static const char *xtermcmd[] = { "xterm", NULL };
 static const char *filemanagercmd[] = { "st", "-e", "nnn", NULL };
 static const char *browsercmd[] = { "qutebrowser", NULL };
